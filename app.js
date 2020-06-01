@@ -1,3 +1,8 @@
+document.addEventListener("DOMContentLoaded", function() {
+const form = document.querySelector("#todoForm");
+const activity = document.querySelector("input[name='activity']")
+const ul = document.querySelector("ul");
+
 function addTask() {
     if (activity.value === "") {
         alert("Please enter an activity");
@@ -15,36 +20,45 @@ function deleteTask() {
     ul.addEventListener("click", function (e){
         if (e.target.tagName === "BUTTON") {
             e.target.parentElement.remove();
+            localStorage["list"] = ul.innerHTML
         }
     });
 } 
 
 function completeTask() {
     ul.addEventListener("click", function(e){
-        if (e.target.tagName === "LI"){
-            e.target.style.textDecoration = "line-through";
+        let finishedTask = e.target
+        if (!finishedTask.isCompleted){
+            finishedTask.style.textDecoration = "line-through";
+            finishedTask.isCompleted = true;
+            localStorage.setItem("completed", finishedTask.style.textDecoration);
+        } else {
+            finishedTask.style.textDecoration = "none";
+            finishedTask.isCompleted = false;
+            localStorage.removeItem("completed");
         }
+        
+        //if (localStorage["completed"]){
+        //   finishedTask.isCompleted;
+        //}
     });
+
+    
 }
 
+if (localStorage["list"]) {
+    ul.innerHTML = localStorage["list"];
 
-const form = document.querySelector("#todoForm");
-const activity = document.querySelector("input[name='activity']")
-const ul = document.querySelector("ul");
+}
 
 
 form.addEventListener("submit", function(e) {
     e.preventDefault();
     addTask();
-    completeTask();
-    deleteTask();
     activity.value = "";
-    
+    localStorage["list"] = ul.innerHTML;
 })
 
-
-//localStorage.setItem("toDoList", ul.innerHTML);
-//    const information = localStorage.getItem("toDoList");
- //   if (information) {
- //       ul.innerHTML = information;
- //   }
+deleteTask();
+completeTask();
+});
